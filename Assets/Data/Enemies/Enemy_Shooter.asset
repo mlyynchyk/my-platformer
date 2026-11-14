@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: Enemy_Shooter
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStatsSO
   patrolSpeed: 1.5
-  chaseSpeed: 3
+  chaseSpeed: 1.5
   chaseRange: 6
-  attackRange: 1.2
+  attackRange: 5
   attackRadius: 0.6
   verticalTolerance: 1.5
   chaseExitFactor: 1.2
   loseTargetTime: 1
-  stopDistance: 0.6
-  maxHealth: 30
-  damage: 10
-  telegraphTime: 0.45
+  stopDistance: 3
+  maxHealth: 20
+  damage: 8
+  telegraphTime: 0.5
   recoveryTime: 0.35
   hurtTime: 0.3
-  tint: {r: 1, g: 1, b: 1, a: 1}
+  tint: {r: 0.8784314, g: 0.9843137, b: 0.9882353, a: 1}
   sizeScale: 1
   telegraphSfx: {fileID: 8300000, guid: bbde276a20fbf5e468a1818b1cf7e176, type: 3}
-  ranged: 0
+  ranged: 1
