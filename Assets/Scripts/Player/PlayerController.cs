@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Cinemachine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -28,7 +29,12 @@ public class PlayerController : MonoBehaviour
 
     [Header("Зворотний звʼязок")]
     [SerializeField, Range(1f, 20f)] private float hardLandingSpeed = 9f;
-    [SerializeField] private CameraShake cameraShake; // Варіант А
+    [SerializeField] private CinemachineImpulseSource impulseSource; // тряска через Cinemachine
+
+    [Header("Взаємодія")]
+    [SerializeField] private Transform interactPoint;
+    [SerializeField, Range(0.2f, 1.5f)] private float interactRadius = 0.6f;
+    [SerializeField] private LayerMask interactableLayer;
 
     [Header("Звук")]
     [SerializeField] private AudioSource source;
@@ -55,7 +61,7 @@ public class PlayerController : MonoBehaviour
         controls = new PlayerControls();
 
         // Префаб не може зберігати посилання на обʼєкт сцени — шукаємо самі[cite: 8].
-        if (cameraShake == null) cameraShake = FindAnyObjectByType<CameraShake>(); // Варіант А
+        if (impulseSource == null) impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     private void OnEnable() => controls.Player.Enable();
@@ -89,6 +95,10 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
             coyoteTimeCounter = 0f;
         }
+
+        // Взаємодія (клавіша E)
+        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+            TryInteract();
 
         // Перевірка приземлення та обчислення швидкості падіння
         CheckLanding();
@@ -156,13 +166,24 @@ public class PlayerController : MonoBehaviour
         wasGrounded = isGrounded;
     }
 
+    private void TryInteract()
+    {
+        if (interactPoint == null) return;
+
+        Collider2D hit = Physics2D.OverlapCircle(
+            interactPoint.position, interactRadius, interactableLayer);
+
+        if (hit != null && hit.TryGetComponent(out IInteractable target))
+            target.Interact();
+    }
+
     private void OnLanded(float speed)
     {
         // ТІЛЬКИ жорстке приземлення. Легкий зскок зі сходинки ефекту не дає[cite: 8]
         if (speed < hardLandingSpeed) return;
 
-        if (cameraShake != null)
-            cameraShake.Shake(0.12f, 0.12f);  // ← весь варіант А
+        if (impulseSource != null)
+            impulseSource.GenerateImpulseWithForce(0.3f);
     }
 
     private void UpdateFootsteps()
