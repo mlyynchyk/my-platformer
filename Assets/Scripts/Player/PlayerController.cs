@@ -70,6 +70,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // Гра на паузі: ввід не читаємо взагалі. Інакше гравець
+        // стрибає й натискає E крізь відкрите меню
+        if (PauseController.IsPaused) return;
+
         // Перевірка земної поверхні
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 

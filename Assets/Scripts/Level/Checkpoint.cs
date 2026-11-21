@@ -25,5 +25,9 @@ public class Checkpoint : MonoBehaviour
         player.SetCheckpoint(transform.position);
         activated = true;
         sprite.color = activeColor;
+
+        // Контрольна точка — природний момент зберегтися:
+        // гравець щойно чогось досяг, і саме це не можна втратити
+        SaveSystem.Save(GameProgress.ToData());
     }
 }
